@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:space_app/data/planet.dart';
 import 'package:space_app/views/planet_details.dart';
 import 'package:space_app/widgets/Explore_button.dart';
 
-import '../views/explore_screen.dart';
-
 class Planetview extends StatefulWidget {
-  const Planetview({super.key});
+  final List<Planet> planets;
+
+  const Planetview({Key? key, required this.planets}) : super(key: key);
 
   @override
   State<Planetview> createState() => _PlanetviewState();
@@ -14,45 +15,6 @@ class Planetview extends StatefulWidget {
 class _PlanetviewState extends State<Planetview> {
   final PageController _pageController = PageController();
   int _currentIndex = 0;
-
-  final List<Map<String, String>> planets = [
-    {
-      'name': 'Earth',
-      'image': 'assets/images/earth.png',
-    },
-    {
-      'name': 'Jupiter',
-      'image': 'assets/images/jupiter.png',
-    },
-    {
-      'name': 'Mars',
-      'image': 'assets/images/mars.png',
-    },
-    {
-      'name': 'Mercury',
-      'image': 'assets/images/mercury.png',
-    },
-    {
-      'name': 'Neptune',
-      'image': 'assets/images/neptune.png',
-    },
-    {
-      'name': 'Saturn',
-      'image': 'assets/images/saturn.png',
-    },
-    {
-      'name': 'Sun',
-      'image': 'assets/images/sun.png',
-    },
-    {
-      'name': 'Uranus',
-      'image': 'assets/images/uranus.png',
-    },
-    {
-      'name': 'Venus',
-      'image': 'assets/images/venus.png',
-    },
-  ];
 
   @override
   void dispose() {
@@ -64,24 +26,31 @@ class _PlanetviewState extends State<Planetview> {
   Widget build(BuildContext context) {
     return Column(children: [
       Expanded(
-        child: PageView.builder(
-          controller: _pageController,
-          onPageChanged: (index) {
-            setState(() {
-              _currentIndex = index;
-            });
-          },
-          itemCount: planets.length,
-          itemBuilder: (context, index) {
-            return Padding(
-              padding: const EdgeInsets.all(20.0),
-              child: Image.asset(
-                planets[index]['image']!,
-                fit: BoxFit.fill,
+        child: widget.planets.isNotEmpty
+            ? PageView.builder(
+                controller: _pageController,
+                onPageChanged: (index) {
+                  setState(() {
+                    _currentIndex = index;
+                  });
+                },
+                itemCount: widget.planets.length,
+                itemBuilder: (context, index) {
+                  return Padding(
+                    padding: const EdgeInsets.all(20.0),
+                    child: Image.asset(
+                      'assets/images/${widget.planets[index].image}',
+                      fit: BoxFit.fill,
+                    ),
+                  );
+                },
+              )
+            : const Center(
+                child: Text(
+                  'No planets to display',
+                  style: TextStyle(color: Colors.white, fontSize: 18),
+                ),
               ),
-            );
-          },
-        ),
       ),
       Row(
         mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -101,7 +70,9 @@ class _PlanetviewState extends State<Planetview> {
             ),
           ),
           Text(
-            planets[_currentIndex]['name']!,
+            widget.planets.isNotEmpty
+                ? widget.planets[_currentIndex].name
+                : 'No Planets Available',
             style: const TextStyle(
               color: Colors.white,
               fontSize: 24,
@@ -113,7 +84,7 @@ class _PlanetviewState extends State<Planetview> {
             child: IconButton(
               icon: const Icon(Icons.arrow_forward, color: Colors.white),
               onPressed: () {
-                if (_currentIndex < planets.length - 1) {
+                if (_currentIndex < widget.planets.length - 1) {
                   _pageController.nextPage(
                     duration: const Duration(milliseconds: 300),
                     curve: Curves.easeInOut,
@@ -128,7 +99,7 @@ class _PlanetviewState extends State<Planetview> {
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => const PlanetDetails(),
+            builder: (context) =>  PlanetDetails(planet: widget.planets[_currentIndex]),
           ),
         );
       }),
