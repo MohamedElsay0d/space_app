@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:space_app/views/planet_details.dart';
 import 'package:space_app/widgets/Explore_button.dart';
 
 import '../views/explore_screen.dart';
@@ -127,7 +128,7 @@ class _PlanetviewState extends State<Planetview> {
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => const ExploreScreen(),
+            builder: (context) => const PlanetDetails(),
           ),
         );
       }),
