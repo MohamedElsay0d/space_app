@@ -9,10 +9,11 @@ class DataLoader {
     try {
       log("Loading CSV file...");
       final csvData = await rootBundle.loadString('assets/data.csv');
-      final List<List<dynamic>> rows = const CsvToListConverter().convert(csvData);
+      final List<List<dynamic>> rows =
+          const CsvToListConverter().convert(csvData);
       return rows.skip(1).map((row) {
-      return Planet.fromCsvRow(row);
-}).toList();
+        return Planet.fromCsvRow(row);
+      }).toList();
     } catch (e, stackTrace) {
       log("Error loading planets: $e");
       return [];
